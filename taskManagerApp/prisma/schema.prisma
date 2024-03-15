@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Task {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  date      String
+  details   String
+  endTime   String
+  fname     String
+  lname     String
+  startTime String
+  task      String
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  address   String
+  createdAt DateTime
+  email     String
+  image     String
+  isActive  Boolean
+  isAdmin   Boolean
+  name      String
+  password  String
+  phone     String
+
+}
+
+model calendars {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  CategoryColor String
+  EndTime       DateTime @db.Date
+  Id            Int
+  Location      String
+  StartTime     DateTime @db.Date
+  Subject       String
+  v             Int      @map("__v")
+}
+
+model tasks {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  v         Int      @map("__v")
+  createdAt DateTime @db.Date
+  date      DateTime @db.Date
+  endTime   String
+  fname     String
+  lname     String
+  location  String
+  startTime String
+  task      String
+  updatedAt DateTime @db.Date
+  userId      String   @db.ObjectId
+
+  users          users         @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model users {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  v         Int      @map("__v")
+  createdAt DateTime @db.Date
+  email     String   @unique(map: "email_1")
+  image     String?
+  isActive  Boolean
+  isAdmin   Boolean
+  name      String   @unique(map: "name_1")
+  password  String
+  phone     String?
+  updatedAt DateTime @db.Date
+
+  tasks           tasks[]
+}
