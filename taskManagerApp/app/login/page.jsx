@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "@/app/ui/dashborad/login/login.module.css";
-import Loginform from "./loginform/loginform";
+import Loginform from "./loginform/Loginform";
 
 const LoginPage = () => {
   return (
