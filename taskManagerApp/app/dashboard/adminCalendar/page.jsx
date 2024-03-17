@@ -13,38 +13,40 @@ import {
 } from "@syncfusion/ej2-react-schedule";
 import { DataManager, WebApiAdaptor } from "@syncfusion/ej2-data";
 import { registerLicense } from "@syncfusion/ej2-base";
-import { getUserColor } from "../../utility/userColorMapping";
+import generateResourceData from "./helper";
+
 
 registerLicense(
   "Ngo9BigBOggjHTQxAR8/V1NAaF1cXmhIfEx1RHxQdld5ZFRHallYTnNWUj0eQnxTdEFjW31dcXBWR2NUVkV/Ww=="
 );
 
 const AdminCalendarPage = () => {
-  const [studentUsers, setStudentUsers] = useState([]);
-  
+  const [resources, setResources] = useState([]);
+
   useEffect(() => {
-    async function fetchUsersAndSetResources() {
+    const fetchAndDisplayNonAdminUsers = async () => {
       try {
-        const response = await fetch("/taskManagerApp/app/api/students");
+        const response = await fetch("../../api/students", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
         if (!response.ok) {
-          console.error("Response error:", response.statusText);
-          const text = await response.text();
-          console.error("Raw response:", text);
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error("Network response was not ok");
         }
-        const users = await response.json();
-        const resources = users.map((user) => ({
-          Id: user.id,
-          Text: user.name,
-          Color: getUserColor(user.id),
-        }));
-        setStudentUsers(resources);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    }
-    fetchUsersAndSetResources();
-  }, []);
+
+
+        const data = await response.json();
+        const resourceData = generateResourceData(data);
+        setResources(resourceData); // Assuming the API returns the data in the correct format
+            } catch (error) {
+                console.error("Failed to fetch data:", error);
+            }
+        };
+        fetchAndDisplayNonAdminUsers();
+      }, []);
 
   const dataManager = new DataManager({
     url: "https://services.syncfusion.com/react/production/api/VirtualEventData",
@@ -69,7 +71,7 @@ const AdminCalendarPage = () => {
                 field="ResourceId"
                 title="Resource"
                 name="Resources"
-                dataSource={studentUsers}
+                dataSource={resources}
                 textField="Text"
                 idField="Id"
                 colorField="Color"
