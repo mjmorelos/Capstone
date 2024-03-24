@@ -7,7 +7,6 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { signIn } from "../auth";
 import prisma from "@/app/utility/prismadb";
-import { NextResponse } from "next/server";
 
 export const addUser = async (formData) => {
   const { name, email, password, image, isAdmin, isActive, phone } =
@@ -33,39 +32,6 @@ export const addUser = async (formData) => {
   }
   revalidatePath("/dashboard/users");
   redirect("/dashboard/users");
-};
-
-//this is for adding task using prisma
-export const addMyTaskToDB = async (formData) => {
-  
-  const body = await request.json();
-  const { task, startDate, endDate, location, description } = body
-
-  try {
-    // Use the Prisma client to create a new task record
-    const newTask = await prisma.task.create({
-      data: {
-        task,
-        startDate,
-        endDate,
-        location,
-        description,
-        userId: currentUser.id,
-      },
-    });
-
-    // Return a response that includes both the new task
-    // and instructions for the client to navigate to the dashboard
-    return {
-      status: "success",
-      data: newTask,
-      message: "Task created successfully. Redirecting to /dashboard/tasks...",
-      redirectTo: "/dashboard/tasks", // Client-side code should handle this redirection
-    };
-  } catch (error) {
-    console.log(error);
-    throw new Error("Failed to create task!");
-  }
 };
 
 //delete user/task

@@ -1,11 +1,22 @@
-import Card1 from "../ui/dashborad/card/card1";
-import Reportlist from "../ui/dashborad/reportlist/reportlist";
-import styles from "../ui/dashborad/dashboard.module.css";
-import Card2 from "../ui/dashborad/card/card2";
-import Card3 from "../ui/dashborad/card/card3";
-import Chart from "../ui/dashborad/chart/chart";
+import { useSession } from "next-auth/react";
+import Card1 from "../ui/dashboard/card/card1";
+import Reportlist from "../ui/dashboard/reportlist/reportlist";
+import styles from "../ui/dashboard/dashboard.module.css";
+import Card2 from "../ui/dashboard/card/card2";
+import Card3 from "../ui/dashboard/card/card3";
+import Chart from "../ui/dashboard/chart/chart";
 
-const Dashborad = () => {
+const Dashboard = () => {
+  const { data: session, status } = useSession();
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
+
+  if (status === "unauthenticated") {
+    return <p>Access Denied. Please log in.</p>;
+  }
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.main}>
@@ -27,4 +38,4 @@ const Dashborad = () => {
   );
 };
 
-export default Dashborad;
+export default Dashboard;

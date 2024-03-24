@@ -4,14 +4,13 @@ import { authConfig } from "./authconfig";
 import { connectToDB } from "./utility/utils";
 import bcrypt from "bcryptjs";
 import { User } from "./utility/models";
-import {React} from 'react';
-
+import { React } from "react";
 
 const login = async (credentials) => {
   try {
     connectToDB();
     const user = await User.findOne({ name: credentials.name });
-    if (!user || !user.isActive) throw new Error("Wrong credentials!");//必须aami才可
+    if (!user || !user.isActive) throw new Error("Wrong credentials!"); //必须aami才可
 
     const isPasswordCorrect = await bcrypt.compare(
       credentials.password,
@@ -34,7 +33,12 @@ export const { signIn, signOut, auth } = NextAuth({
         const user = await login(credentials);
         if (user) {
           // Ensure you return an object containing at least a `name` property
-          return { email: user.email, name: user.name, image: user.image, isAdmin:user.isAdmin };
+          return {
+            email: user.email,
+            name: user.name,
+            image: user.image,
+            isAdmin: user.isAdmin,
+          };
         } else {
           return null;
         }
@@ -48,6 +52,7 @@ export const { signIn, signOut, auth } = NextAuth({
         token.name = user.name;
         token.image = user.image;
         token.isAdmin = user.isAdmin;
+        token.uid = user.id;
       }
       return token;
     },
@@ -57,10 +62,9 @@ export const { signIn, signOut, auth } = NextAuth({
         session.user.image = token.image;
         session.user.email = token.email;
         session.user.isAdmin = token.isAdmin;
+        session.user.id = token.uid;
       }
       return session;
     },
   },
-  
 });
-

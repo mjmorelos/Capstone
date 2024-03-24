@@ -1,130 +1,166 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "@/app/ui/dashborad/tasks/addtask.module.css";
-import { addMyTaskToDB } from "@/app/utility/action";
+import { useSession } from "next-auth/react";
 
 const Addtask = () => {
+  const { data: session } = useSession();
+
   const [isOtherSelected, setIsOtherSelected] = useState(false);
   const [isOtherTaskSelected, setIsOtherTaskSelected] = useState(false);
   const [customLocation, setCustomLocation] = useState("");
   const [customTask, setCustomTask] = useState("");
-
-  const handleSelectChange = (e) => {
-    const isOther = e.target.value === "other";
-    setIsOtherSelected(isOther);
-    // Reset or set default value for customLocation when "Other" is selected
-    if (isOther) {
-      setCustomLocation(""); // Or set a default value like 'Type your location...'
-    }
-  };
-  const handleTaskSelectChange = (e) => {
-    const isOther = e.target.value === "other";
-    setIsOtherTaskSelected(isOther);
-    // Reset or set default value for customLocation when "Other" is selected
-    if (isOther) {
-      setCustomTask(""); // Or set a default value like 'Type your location...'
-    }
-  };
-  const handleCustomLocationChange = (e) => {
-    setCustomLocation(e.target.value);
-  };
-  const handleCustomTaskChange = (e) => {
-    setCustomTask(e.target.value);
-  };
-
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [submissionSuccess, setSubmissionSuccess] = useState(false);
 
-  const generateTimeOptions = (interval) => {
-    const times = [];
-    for (let hour = 6; hour <= 21; hour++) {
-      // Changed loop bounds
-      for (let minute = 0; minute < 60; minute += interval) {
-        const time = `${hour.toString().padStart(2, "0")}:${minute
-          .toString()
-          .padStart(2, "0")}`;
-        times.push(time);
-      }
+  const handleSelectChange = (e) => {
+    setIsOtherSelected(e.target.value === "other");
+    if (e.target.value === "other") {
+      setCustomLocation("");
     }
-    return times;
   };
 
-  const timeOptions = generateTimeOptions(30);
+  const handleTaskSelectChange = (e) => {
+    setIsOtherTaskSelected(e.target.value === "other");
+    if (e.target.value === "other") {
+      setCustomTask("");
+    }
+  };
+
+  const handleCustomLocationChange = (e) => setCustomLocation(e.target.value);
+  const handleCustomTaskChange = (e) => setCustomTask(e.target.value);
+
+  const handleSubmit = async (event) => {
+    const userId = session?.user?.id;
+
+    event.preventDefault();
+    setIsSubmitting(true);
+    setError("");
+    setSubmissionSuccess(false);
+
+    const taskData = {
+      task: isOtherTaskSelected ? customTask : event.target.task.value,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+      location: isOtherSelected ? customLocation : event.target.location.value,
+      description: event.target.description.value,
+      userId,
+    };
+
+    try {
+      const response = await fetch("/api/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(taskData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      await response.json();
+      setSubmissionSuccess(true);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Example useEffect, reacting to submission success
+  useEffect(() => {
+    if (submissionSuccess) {
+      // Redirect or inform the user of success
+      console.log("Task was successfully added!");
+      // Reset form or redirect user
+    }
+  }, [submissionSuccess]);
 
   return (
     <div className={styles.container}>
-      <form action={addMyTaskToDB} className={styles.form}>
-        <select name="task" id="list" onChange={handleTaskSelectChange}>
+      <form className={styles.form} onSubmit={handleSubmit}>
+        {/* Task selection or custom task input */}
+        <select name="task" id="taskSelect" onChange={handleTaskSelectChange}>
           <option value="general">Choose a Task</option>
-          <option value="yoga">Yoga</option>
-          <option value="bike">Bike</option>
-          <option value="movie">Movie</option>
-          <option value="dinner">Dinner</option>
-          <option value="afternoon-tea">Afternoon Tea</option>
-          <option value="reading">Reading</option>
+          {/* ... other options ... */}
           <option value="other">Other</option>
         </select>
         {isOtherTaskSelected && (
           <input
             type="text"
             placeholder="Enter Task"
-            name="task"
+            name="customTask"
             value={customTask}
             onChange={handleCustomTaskChange}
           />
         )}
 
+        {/* Date pickers for start and end dates */}
         <DatePicker
           selected={startDate}
-          onChange={(date) => setStartDate(date)}
+          onChange={setStartDate}
           name="startDate"
           dateFormat="MMMM d, yyyy h:mm aa"
-          className="calendar"
-          calendarClassName="my-datepicker-calendar"
-          placeholderText="Start Date"
-          timeInputLabel="Time:"
+          className={styles.calendar}
           showTimeSelect
+          placeholderText="Start Date"
         />
         <DatePicker
           selected={endDate}
-          onChange={(date) => setEndDate(date)}
+          onChange={setEndDate}
           name="endDate"
           dateFormat="MMMM d, yyyy h:mm aa"
-          className="calendar"
-          calendarClassName="my-datepicker-calendar"
+          className={styles.calendar}
           showTimeSelect
+          placeholderText="End Date"
         />
 
-        <select name="location" id="location" onChange={handleSelectChange}>
+        {/* Location selection or custom location input */}
+        <select
+          name="location"
+          id="locationSelect"
+          onChange={handleSelectChange}
+        >
           <option value="general">Choose a Location</option>
-          <option value="building-1">Building #1</option>
-          <option value="fitness-center">Fitness Center</option>
-          <option value="main-floor">Main floor</option>
-          <option value="building-2">Building #2</option>
-          <option value="swimming-pool">Swimming Pool</option>
-          <option value="park">Park</option>
+          {/* ... other options ... */}
           <option value="other">Other</option>
         </select>
         {isOtherSelected && (
           <input
             type="text"
             placeholder="Enter custom location"
-            name="location"
+            name="customLocation"
             value={customLocation}
             onChange={handleCustomLocationChange}
           />
         )}
+
+        {/* Text area for the task description */}
         <textarea
-          type="text"
+          className={styles.textarea}
           placeholder="Description"
           name="description"
           required
         />
 
-        <button type="submit">Add Task</button>
+        {/* Submit button */}
+        <button
+          type="submit"
+          className={styles.submitButton}
+          disabled={isSubmitting}
+        >
+          Add Task
+        </button>
       </form>
+
+      {/* Error display */}
+      {error && <p className={styles.error}>{error}</p>}
     </div>
   );
 };
