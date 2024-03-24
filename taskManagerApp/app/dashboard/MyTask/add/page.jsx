@@ -35,6 +35,7 @@ const Addtask = () => {
   };
 
   const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
 
   const generateTimeOptions = (interval) => {
     const times = [];
@@ -55,9 +56,6 @@ const Addtask = () => {
   return (
     <div className={styles.container}>
       <form action={addMyTaskToDB} className={styles.form}>
-        <input type="text" placeholder="First Name" name="fname" required />
-        <input type="text" placeholder="Last Name" name="lname" required />
-        {/* <input type="text" placeholder="Task" name="" required /> */}
         <select name="task" id="list" onChange={handleTaskSelectChange}>
           <option value="general">Choose a Task</option>
           <option value="yoga">Yoga</option>
@@ -69,40 +67,35 @@ const Addtask = () => {
           <option value="other">Other</option>
         </select>
         {isOtherTaskSelected && (
-        <input
-          type="text"
-          placeholder="Enter Task"
-          name="task"
-          value={customTask}
-          onChange={handleCustomTaskChange}
-        />
-      )}
+          <input
+            type="text"
+            placeholder="Enter Task"
+            name="task"
+            value={customTask}
+            onChange={handleCustomTaskChange}
+          />
+        )}
 
         <DatePicker
           selected={startDate}
           onChange={(date) => setStartDate(date)}
-          name="date"
-          dateFormat="MMMM d, yyyy"
+          name="startDate"
+          dateFormat="MMMM d, yyyy h:mm aa"
           className="calendar"
           calendarClassName="my-datepicker-calendar"
+          placeholderText="Start Date"
+          timeInputLabel="Time:"
+          showTimeSelect
         />
-        <select name="startTime" required>
-          <option value="">Select Start Time</option>
-          {timeOptions.map((time, index) => (
-            <option key={`start-${index}`} value={time}>
-              {time}
-            </option>
-          ))}
-        </select>
-
-        <select name="endTime" required>
-          <option value="">Select End Time</option>
-          {timeOptions.map((time, index) => (
-            <option key={`end-${index}`} value={time}>
-              {time}
-            </option>
-          ))}
-        </select>
+        <DatePicker
+          selected={endDate}
+          onChange={(date) => setEndDate(date)}
+          name="endDate"
+          dateFormat="MMMM d, yyyy h:mm aa"
+          className="calendar"
+          calendarClassName="my-datepicker-calendar"
+          showTimeSelect
+        />
 
         <select name="location" id="location" onChange={handleSelectChange}>
           <option value="general">Choose a Location</option>
@@ -123,6 +116,12 @@ const Addtask = () => {
             onChange={handleCustomLocationChange}
           />
         )}
+        <textarea
+          type="text"
+          placeholder="Description"
+          name="description"
+          required
+        />
 
         <button type="submit">Add Task</button>
       </form>

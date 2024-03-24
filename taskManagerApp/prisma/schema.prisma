@@ -7,18 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Task {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  date      String
-  details   String
-  endTime   String
-  fname     String
-  lname     String
-  startTime String
-  task      String
-}
-
-
 model calendars {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   CategoryColor String
@@ -33,14 +21,12 @@ model calendars {
 model tasks {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   v         Int      @map("__v")
-  createdAt DateTime @db.Date
-  date      DateTime @db.Date
-  endTime   String
-  fname     String
-  lname     String
-  location  String
-  startTime String
   task      String
+  startDate DateTime @db.Date
+  endDate   DateTime @db.Date
+  location  String
+  description String? 
+  createdAt DateTime @default(now())
   updatedAt DateTime @db.Date
   userId      String   @db.ObjectId
 

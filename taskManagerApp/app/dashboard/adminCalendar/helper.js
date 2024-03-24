@@ -1,14 +1,14 @@
 export default function generateResourceData(users) {
   var data = [];
   var colors = [
-    "#ff8787",
+    "#DB8780",
     "#9775fa",
     "#748ffc",
     "#3bc9db",
     "#69db7c",
     "#fdd835",
-    "#748ffc",
-    "#9775fa",
+    "#FF033E",
+    "#7D7098",
     "#df5286",
     "#7fa900",
     "#fec200",

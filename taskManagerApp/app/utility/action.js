@@ -6,9 +6,12 @@ import { connectToDB } from "./utils";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { signIn } from "../auth";
+import prisma from "@/app/utility/prismadb";
+import { NextResponse } from "next/server";
 
 export const addUser = async (formData) => {
-  const { name, email, password, image, isAdmin, isActive, phone } = Object.fromEntries(formData);
+  const { name, email, password, image, isAdmin, isActive, phone } =
+    Object.fromEntries(formData);
   try {
     connectToDB();
     const saltRounds = 10;
@@ -32,59 +35,38 @@ export const addUser = async (formData) => {
   redirect("/dashboard/users");
 };
 
-//8888888888888888888888888888888888
-export const addTaskToDB = async (formData) => {
-  const { fname, lname, task, date, startTime, endTime, location } =
-    Object.fromEntries(formData);
-
-  try {
-    connectToDB();
-
-    const newTask = new Task({
-      fname,
-      lname,
-      task,
-      date,
-      startTime,
-      endTime,
-      location,
-    });
-
-    await newTask.save();
-  } catch (error) {
-    console.log(error);
-    throw new Error("Failed to create task!");
-  }
-  revalidatePath("/dashboard/tasks");
-  redirect("/dashboard/tasks");
-};
-
+//this is for adding task using prisma
 export const addMyTaskToDB = async (formData) => {
-  const { fname, lname, task, date, startTime, endTime, location } =
-    Object.fromEntries(formData);
+  
+  const body = await request.json();
+  const { task, startDate, endDate, location, description } = body
 
   try {
-    connectToDB();
-
-    const newTask = new Task({
-      fname,
-      lname,
-      task,
-      date,
-      startTime,
-      endTime,
-      location,
+    // Use the Prisma client to create a new task record
+    const newTask = await prisma.task.create({
+      data: {
+        task,
+        startDate,
+        endDate,
+        location,
+        description,
+        userId: currentUser.id,
+      },
     });
 
-    await newTask.save();
+    // Return a response that includes both the new task
+    // and instructions for the client to navigate to the dashboard
+    return {
+      status: "success",
+      data: newTask,
+      message: "Task created successfully. Redirecting to /dashboard/tasks...",
+      redirectTo: "/dashboard/tasks", // Client-side code should handle this redirection
+    };
   } catch (error) {
     console.log(error);
     throw new Error("Failed to create task!");
   }
-  revalidatePath("/dashboard/MyTask");
-  redirect("/dashboard/MyTask");
 };
-
 
 //delete user/task
 export const deleteUser = async (formData) => {
@@ -206,7 +188,6 @@ export const updateMyTask = async (formData) => {
   revalidatePath("/dashboard/MyTask");
   redirect("/dashboard/MyTask");
 };
-
 
 export const authenticate = async (prevState, formData) => {
   const { name, password } = Object.fromEntries(formData);

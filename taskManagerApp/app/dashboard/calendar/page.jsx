@@ -21,32 +21,31 @@ import { ButtonComponent } from "@syncfusion/ej2-react-buttons";
 import dataSource from "./datasource.json";
 import { registerLicense } from "@syncfusion/ej2-base";
 
-
 registerLicense(
   "Ngo9BigBOggjHTQxAR8/V1NAaF1cXmhIfEx1RHxQdld5ZFRHallYTnNWUj0eQnxTdEFjW31dcXBWR2NUVkV/Ww=="
 );
 
 const Calendarpage = () => {
-    // State to hold the current flex direction
-    const [flexDirection, setFlexDirection] = useState('row');
+  // State to hold the current flex direction
+  const [flexDirection, setFlexDirection] = useState("row");
 
-    useEffect(() => {
-      // Function to update the flex direction based on window width
-      const updateFlexDirection = () => {
-        if (window.innerWidth < 750) {
-          setFlexDirection('column');
-        } else {
-          setFlexDirection('row');
-        }
-      };
-  
-      // Call the function on component mount and on window resize
-      updateFlexDirection();
-      window.addEventListener('resize', updateFlexDirection);
-  
-      // Cleanup function to remove the event listener
-      return () => window.removeEventListener('resize', updateFlexDirection);
-    }, []); // Empty dependency array means this effect runs once on mount
+  useEffect(() => {
+    // Function to update the flex direction based on window width
+    const updateFlexDirection = () => {
+      if (window.innerWidth < 750) {
+        setFlexDirection("column");
+      } else {
+        setFlexDirection("row");
+      }
+    };
+
+    // Call the function on component mount and on window resize
+    updateFlexDirection();
+    window.addEventListener("resize", updateFlexDirection);
+
+    // Cleanup function to remove the event listener
+    return () => window.removeEventListener("resize", updateFlexDirection);
+  }, []); // Empty dependency array means this effect runs once on mount
 
   const [display, setDisplay] = useState("block");
   let scheduleObj = useRef(null);
