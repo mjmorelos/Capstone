@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "@/app/ui/dashborad/tasks/addtask.module.css";
-import { useSession } from "next-auth/react";
+import { SessionProvider, useSession } from "next-auth/react";
 
 const Addtask = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const [isOtherSelected, setIsOtherSelected] = useState(false);
   const [isOtherTaskSelected, setIsOtherTaskSelected] = useState(false);
@@ -50,7 +50,7 @@ const Addtask = () => {
       endDate: endDate.toISOString(),
       location: isOtherSelected ? customLocation : event.target.location.value,
       description: event.target.description.value,
-      userId,
+      userId : userId,
     };
 
     try {
