@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "@/app/ui/dashborad/tasks/addtask.module.css";
-import { SessionProvider, useSession } from "next-auth/react";
+import { SessionProvider } from "next-auth/react";
+import { auth } from "@/app/auth.js";
 
-const Addtask = () => {
-  const { data: session, status } = useSession();
+
+const Addtask = async () => {
+  const { user } = await auth();
 
   const [isOtherSelected, setIsOtherSelected] = useState(false);
   const [isOtherTaskSelected, setIsOtherTaskSelected] = useState(false);
@@ -37,7 +39,6 @@ const Addtask = () => {
   const handleCustomTaskChange = (e) => setCustomTask(e.target.value);
 
   const handleSubmit = async (event) => {
-    const userId = session?.user?.id;
 
     event.preventDefault();
     setIsSubmitting(true);
@@ -50,7 +51,7 @@ const Addtask = () => {
       endDate: endDate.toISOString(),
       location: isOtherSelected ? customLocation : event.target.location.value,
       description: event.target.description.value,
-      userId : userId,
+      userId : user.id,
     };
 
     try {
@@ -83,6 +84,7 @@ const Addtask = () => {
   }, [submissionSuccess]);
 
   return (
+    <SessionProvider session={user}>
     <div className={styles.container}>
       <form className={styles.form} onSubmit={handleSubmit}>
         {/* Task selection or custom task input */}
@@ -162,6 +164,7 @@ const Addtask = () => {
       {/* Error display */}
       {error && <p className={styles.error}>{error}</p>}
     </div>
+    </SessionProvider>
   );
 };
 

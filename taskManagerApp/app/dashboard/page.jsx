@@ -7,15 +7,6 @@ import Card3 from "../ui/dashboard/card/card3";
 import Chart from "../ui/dashboard/chart/chart";
 
 const Dashboard = () => {
-  const { data: session, status } = useSession();
-
-  if (status === "loading") {
-    return <p>Loading...</p>;
-  }
-
-  if (status === "unauthenticated") {
-    return <p>Access Denied. Please log in.</p>;
-  }
 
   return (
     <div className={styles.wrapper}>
