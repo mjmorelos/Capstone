@@ -12,7 +12,15 @@ export const addUser = async (formData) => {
   const { name, email, password, image, isAdmin, isActive, phone } =
     Object.fromEntries(formData);
   try {
-    connectToDB();
+    await connectToDB();
+    const existingUser = await User.findOne({
+      $or: [{ name }, { email }, { phone }]
+    }).lean().exec();
+
+    if (existingUser) {
+      throw new Error("User with the same name, email, or phone already exists!");
+    }
+
     const saltRounds = 10;
     const salt = bcrypt.genSaltSync(saltRounds);
     const hashPassword = bcrypt.hashSync(password, salt);
@@ -25,10 +33,10 @@ export const addUser = async (formData) => {
       isActive,
       phone,
     });
-    await newUser.save();
+  await newUser.save();
   } catch (err) {
     console.log(err);
-    throw new Error("Failed to create user!");
+    throw new Error("Failed to create user. User with the same name, email, or phone already exists!");
   }
   revalidatePath("/dashboard/users");
   redirect("/dashboard/users");
