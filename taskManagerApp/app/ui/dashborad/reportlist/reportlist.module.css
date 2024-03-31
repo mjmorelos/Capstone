@@ -1,78 +1,76 @@
-.container{
-    background-color: var(--bg);
-    border: 20px;
-    border-radius: 10px;
+.container {
+  background-color: var(--bg);
+  border: 20px;
+  border-radius: 10px;
 }
 
-.title{
-    margin: 20px;
-    font-weight: 300;
-    color: var(--textSoft);
+.title {
+  margin: 20px;
+  font-weight: 300;
+  color: var(--textSoft);
 }
 
-.table{
-    table-layout: flex ;
-    width: 100%;
-    font-size: smaller;
-    border-collapse: collapse;
-    
-  }
+.table {
+  table-layout: flex;
+  width: 100%;
+  font-size: smaller;
+  border-collapse: collapse;
+}
 
 .table tr:hover {
-    background-color: #fce5d7;
+  background-color: #fce5d7;
 }
 
-.table thead{
-    font-weight: bold;
-    background-color: #d5d8e4;
-    height: 50px;
+.table thead {
+  font-weight: bold;
+  background-color: #d5d8e4;
+  height: 50px;
 }
 
-.table td{
-    padding: 15px;
+.table td {
+  padding: 15px;
 }
 
-.hour{
-    color: var(--bg-main-orange);
-    font-weight: bold;
+.hour {
+  color: var(--bg-main-orange);
+  font-weight: bold;
 }
 
-.user{
-    display: flex;
-    gap: 10px;
-    align-items: center;
+.user {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
-.userImage{
-    object-fit: cover;
-    border-radius: 50%;
-    border: 1px solid #cacaca;
-    box-shadow: 0 4px 4px 0 rgba(152, 152, 152, 0.2), 0 2px 16px 0 rgba(9, 9, 10, 0.19);
-}
-
-.status{
-    border-radius: 5px;
-    padding: 5px;
-    font-size: 14px;
-    color: var(--bg);
+.userImage {
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid #cacaca;
+  box-shadow: 0 4px 4px 0 rgba(152, 152, 152, 0.2),
+    0 2px 16px 0 rgba(9, 9, 10, 0.19);
 }
 
-.pending{
-    background-color:var(--bg-main-yellow) ;
-}
-.done{
-    background-color:var(--bg-main-blue) ;
-}
-.cancelled{
-    background-color:var(--bg-main-orange) ;
+.status {
+  border-radius: 5px;
+  padding: 5px;
+  font-size: 14px;
+  color: var(--bg);
 }
 
+.pending {
+  background-color: var(--bg-main-yellow);
+}
+.completed {
+  background-color: green;
+  color: white;
+}
 
+.cancelled {
+  background-color: var(--bg-main-orange);
+}
 
 /* Responsive adjustments for screens with max-width of 768px */
 @media (max-width: 768px) {
-    .container {
-        font-size: small;
-    }
-    
+  .container {
+    font-size: small;
   }
-  
+}

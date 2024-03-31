@@ -12,6 +12,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { useState, useEffect } from "react";
 
 const data = [
   {
@@ -37,7 +38,6 @@ const data = [
   {
     name: "Fri",
     hours: 11,
-
   },
   {
     name: "Sat",
@@ -57,76 +57,79 @@ const getPath = (x, y, width, height) => {
   Z`;
 };
 
+const getRandomHours = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
 const TriangleBar = (props) => {
   const { fill, x, y, width, height } = props;
 
   return <path d={getPath(x, y, width, height)} stroke="none" fill={fill} />;
 };
 
-//------------------------------------CHART2
-const userdata = [
-  {
-    name: "Jane",
-    Hours: 29,
-  },
-  {
-    name: "John",
-    Hours: 34,
-  },
-  {
-    name: "Bob",
-    Hours: 26,
-  },
-  {
-    name: "Vince",
-    Hours: 30,
-  },
-  {
-    name: "Mary",
-    Hours: 25,
-  },
-  {
-    name: "Sunny",
-    Hours: 26,
-  },
-  {
-    name: "Sally",
-    Hours: 30,
-  },
-  {
-    name: "Micheal",
-    Hours: 32,
-  },
-];
-
-const getIntroOfPage = (label) => {
-  const user = userdata.find((user) => user.name === label);
-  if (user) {
-    return `${user.name} has completed ${user.Hours} hours this month.`;
-  }
-  return "";
-};
-
-const CustomTooltip = ({ active, payload, label }) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className={styles.customtooltip}>
-        <p className={styles.label}>{`${label} : ${payload[0].value} Hours`}</p>
-        <p className="intro">{getIntroOfPage(label)}</p>
-        <p className="desc">
-          <BsStarFill />
-          <BsStarFill />
-          <BsStarFill />
-        </p>
-      </div>
-    );
-  }
-
-  return null;
-};
-
 //------------------------------------
 const Chart = () => {
+  const [userData, setUserData] = useState([]);
+
+  const getIntroOfPage = (label, userData) => {
+    const user = userData.find((user) => user.name === label);
+    if (user) {
+      return `${user.name} has completed ${user.Hours} hours this month.`;
+    }
+    return "";
+  };
+
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      // Pass the userData state to getIntroOfPage function
+      const intro = getIntroOfPage(label, userData);
+      return (
+        <div className={styles.customtooltip}>
+          <p
+            className={styles.label}
+          >{`${label} : ${payload[0].value} Hours`}</p>
+          <p className="intro">{intro}</p>
+          <p className="desc">
+            <BsStarFill />
+            <BsStarFill />
+            <BsStarFill />
+          </p>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch("../../api/students", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        let data = await response.json();
+        // Assign random hours to each user for dummy data
+        data = data.map((user) => ({
+          ...user,
+          Hours: getRandomHours(20, 40), // Dummy data: random hours between 20 and 40
+        }));
+        setUserData(data);
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   return (
     <div>
       <div className={styles.container2}>
@@ -135,7 +138,7 @@ const Chart = () => {
           <BarChart
             width={500}
             height={300}
-            data={userdata}
+            data={userData}
             margin={{
               top: 5,
               right: 30,
@@ -146,7 +149,7 @@ const Chart = () => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
             <YAxis />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<CustomTooltip userData={userData} />} />
             <Legend />
             <Bar dataKey="Hours" barSize={40} fill="#3461FD" />
           </BarChart>

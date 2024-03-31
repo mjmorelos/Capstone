@@ -9,6 +9,19 @@ import defaultAvatar from "@/public/noavatar.png";
 const Reportlist = () => {
   const [users, setUsers] = useState([]);
 
+  // Helper function to generate a random date between two dates
+  const randomDate = (start, end) => {
+    return new Date(
+      start.getTime() + Math.random() * (end.getTime() - start.getTime())
+    );
+  };
+
+  // Helper function to format date to a readable string
+  const formatDate = (date) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return date.toLocaleDateString(undefined, options);
+  };
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -23,7 +36,26 @@ const Reportlist = () => {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        const data = await response.json();
+        let data = await response.json();
+        const currentDate = new Date();
+
+        // Add dummy data to each user
+        data = data.map((user) => {
+          const randomEventDate = randomDate(
+            new Date(2024, 0, 1),
+            new Date(2024, 11, 31)
+          );
+          const eventStatus =
+            randomEventDate < currentDate ? "Completed" : "Pending";
+          return {
+            ...user,
+            hoursCurrentMonth: Math.floor(Math.random() * 30) + 1,
+            hoursTotalMonth: 30,
+            nextEventDate: formatDate(randomEventDate),
+            eventStatus,
+          };
+        });
+
         setUsers(data);
       } catch (error) {
         console.error("Failed to fetch users:", error);
@@ -51,7 +83,7 @@ const Reportlist = () => {
               <td>
                 <div className={styles.user}>
                   <Image
-                    src={user.avatar || defaultAvatar}
+                    src={user.avatar || defaultAvatar} // Adjust the path to your default avatar image if different
                     width={40}
                     height={40}
                     className={styles.userImage}
@@ -64,13 +96,16 @@ const Reportlist = () => {
                 <span className={styles.hour}>{user.hoursCurrentMonth} </span>/{" "}
                 {user.hoursTotalMonth}
               </td>
-              <td>
-                <span className={styles.hour}>{user.hoursYearToDate} </span>/{" "}
-                {user.hoursTotalYear}
-              </td>
-              <td>{user.hourBank}</td>
               <td>{user.nextEventDate}</td>
-              <td></td>
+              <td>
+                <span
+                  className={`${styles.status} ${
+                    styles[user.eventStatus.toLowerCase().replace(" ", "")]
+                  }`}
+                >
+                  {user.eventStatus}
+                </span>
+              </td>
             </tr>
           ))}
         </tbody>
