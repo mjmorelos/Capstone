@@ -13,13 +13,12 @@ import {
 import { employeeDetails } from "./data";
 import { CheckBoxComponent } from "@syncfusion/ej2-react-buttons";
 import { PropertyPane } from "./property-pane";
-import styles from '@/app/ui/dashborad/reportlist/master.module.css'
+import styles from "@/app/ui/dashborad/reportlist/master.module.css";
 import { registerLicense } from "@syncfusion/ej2-base";
 registerLicense(
-    "Ngo9BigBOggjHTQxAR8/V1NAaF1cXmhIfEx1RHxQdld5ZFRHallYTnNWUj0eQnxTdEFjW31dcXBWR2NUVkV/Ww=="
-  );
+  "Ngo9BigBOggjHTQxAR8/V1NAaF1cXmhIfEx1RHxQdld5ZFRHallYTnNWUj0eQnxTdEFjW31dcXBWR2NUVkV/Ww=="
+);
 
-  
 function MasterReport() {
   const toolbarOptions = ["ExcelExport", "PdfExport", "CsvExport"];
   let gridInstance;
@@ -104,7 +103,7 @@ function MasterReport() {
         break;
     }
   }
-  
+
   return (
     <div className="control-pane">
       <div
@@ -113,7 +112,7 @@ function MasterReport() {
           backgroundColor: "#ffffff",
           border: "20px",
           borderRadius: "10px",
-          marginTop:"20px"
+          marginTop: "20px",
         }}
       >
         <GridComponent
@@ -167,7 +166,7 @@ function MasterReport() {
               allowGrouping={false}
             ></ColumnDirective>
           </ColumnsDirective>
-          <Inject services={[Toolbar, ExcelExport, PdfExport, Group]}  />
+          <Inject services={[Toolbar, ExcelExport, PdfExport, Group]} />
         </GridComponent>
       </div>
       <div className="col-lg-3 property-section">

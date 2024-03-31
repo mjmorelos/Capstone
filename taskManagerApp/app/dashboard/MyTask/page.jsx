@@ -5,11 +5,8 @@ import Link from "next/link";
 import Pagination from "@/app/ui/dashborad/pagination/pagination";
 import { fetchStudentTasks } from "@/app/utility/data";
 import { deleteTask } from "@/app/utility/action";
-import { auth } from "@/app/auth.js";
-import { SessionProvider } from "next-auth/react";
 
 const MyTasksPage = async ({ searchParams }) => {
-  const { user } = await auth();
 
   const search = searchParams?.search || "";
   const page = searchParams?.page || 1;
@@ -44,7 +41,7 @@ const MyTasksPage = async ({ searchParams }) => {
   }
 
   return (
-    <SessionProvider session={user}>
+
     <div className={styles.container}>
       <div className={styles.top}>
         <Search placeholder="Search for Task..." />
@@ -114,7 +111,6 @@ const MyTasksPage = async ({ searchParams }) => {
       </table>
       <Pagination count={count} />
     </div>
-    </SessionProvider>
   );
 };
 
