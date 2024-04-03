@@ -83,7 +83,7 @@ const Reportlist = () => {
               <td>
                 <div className={styles.user}>
                   <Image
-                    src={user.avatar || defaultAvatar} // Adjust the path to your default avatar image if different
+                    src={user.image || defaultAvatar} // Adjust the path to your default avatar image if different
                     width={40}
                     height={40}
                     className={styles.userImage}

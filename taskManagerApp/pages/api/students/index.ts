@@ -13,7 +13,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             isAdmin: false,
           },
           select: {
-            name: true, 
+            name: true,
+            image: true,
           },
         });
   
