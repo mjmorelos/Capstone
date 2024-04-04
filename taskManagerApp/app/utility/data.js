@@ -67,4 +67,20 @@ export const fetchTasks= async (search, page) => {
         throw new Error("Failed to fetch task!");
       }
     };
-  
+
+
+    export const fetchUsersPrint = async (search, page) => {
+      const regex = new RegExp(search, "i");
+      const ITEM_PER_PAGE = 100;
+      const query = { name: { $regex: regex }, isAdmin: false, isActive: true };
+    
+      try {
+        connectToDB();
+        const count = await User.countDocuments(query);
+        const users = await User.find(query).limit(ITEM_PER_PAGE).skip((page - 1) * ITEM_PER_PAGE);
+        return { users, count };
+      } catch (error) {
+        console.log(error);
+        throw new Error("Failed to fetch users!");
+      }
+    };
