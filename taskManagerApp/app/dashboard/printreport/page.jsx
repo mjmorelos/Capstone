@@ -2,6 +2,8 @@ import React from "react";
 import Image from "next/image";
 import styles from "@/app/ui/dashborad/reportlist/reportlist.module.css";
 import { fetchUsersPrint } from "@/app/utility/data";
+import { PdfExport } from "@syncfusion/ej2-react-grids";
+import { ExcelExport } from "@syncfusion/ej2-react-schedule";
 
 
 const Reportlist = async () => {
@@ -14,10 +16,11 @@ const Reportlist = async () => {
       <table className={styles.table}>
         <thead className={styles.thead}>
           <tr>
-            <td>Image</td>
+            <td></td>
             <td>Name</td>
             <td>Phone</td>
             <td>Email</td>
+            <td># of Tasks</td>
           </tr>
         </thead>
         <tbody>

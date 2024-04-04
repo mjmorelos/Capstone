@@ -18,12 +18,12 @@
 }
 
 .table tr:hover {
-  background-color: #fce5d7;
+  background-color: #e2de6e;
 }
 
 .table thead {
   font-weight: bold;
-  background-color: #d5d8e4;
+  background-color: #b1b8d2;
   height: 50px;
 }
 
